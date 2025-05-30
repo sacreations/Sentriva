@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { HeartIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 
-export default function ResultsPage() {
+function ResultsContent() {
   const [score, setScore] = useState<number>(0);
   const [level, setLevel] = useState<string>('');
   const searchParams = useSearchParams();
@@ -163,5 +163,20 @@ export default function ResultsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen wellness-bg flex items-center justify-center">
+        <div className="card">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="text-center mt-4 text-gray-600">Loading your results...</p>
+        </div>
+      </div>
+    }>
+      <ResultsContent />
+    </Suspense>
   );
 }
