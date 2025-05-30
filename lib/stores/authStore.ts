@@ -116,7 +116,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       const testResultData = {
-        ...result.toJSON(),
+        ...result.toJson(),
         userId: user.uid,
         userEmail: user.email,
         createdAt: new Date(),
@@ -149,13 +149,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const result = new TestResultClass(
-          data.questions,
-          data.responses,
-          data.totalScore,
-          data.severity,
-          data.completedAt
-        );
+        const result = new TestResultClass({
+          score: data.totalScore || data.score,
+          level: data.severity || data.level,
+          date: data.completedAt ? new Date(data.completedAt) : new Date(data.createdAt),
+          answers: data.responses || data.answers || {}
+        });
         results.push(result);
       });
       
