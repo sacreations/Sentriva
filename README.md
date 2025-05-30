@@ -63,7 +63,32 @@ Add these to your Vercel project settings:
    - Add your Vercel domain to authorized JavaScript origins
    - Add your Vercel domain + `/api/auth/callback/google` to authorized redirect URIs
 
-3. **Common Issues**:
+3. **Firestore Security Rules**:
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       // Users can read/write their own user document
+       match /users/{userId} {
+         allow read, write: if request.auth != null && request.auth.uid == userId;
+       }
+       
+       // Users can read/write their own test results
+       match /testResults/{resultId} {
+         allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+         allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+       }
+     }
+   }
+   ```
+
+4. **Authentication Settings**:
+   - Go to Firebase Console → Authentication → Sign-in method
+   - Enable Google Sign-in provider
+   - Add your domain to authorized domains
+
+5. **Common Issues**:
+   - **Permission Denied**: Ensure Firestore security rules are properly configured
    - Ensure all environment variables are properly set in Vercel
    - Verify domain is added to Firebase authorized domains
    - Check that Google OAuth is properly configured

@@ -90,15 +90,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const userCredential = await signInWithPopup(auth, provider);
       const user = userCredential.user;
       
-      // Check if user document exists, create if not
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
-          displayName: user.displayName,
-          email: user.email,
-          createdAt: new Date(),
-          projectId: (firebaseConfig as any).projectId
-        });
+      // Only create user document if it doesn't exist and we have permission
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists()) {
+          await setDoc(doc(db, 'users', user.uid), {
+            displayName: user.displayName,
+            email: user.email,
+            createdAt: new Date(),
+            projectId: (firebaseConfig as any).projectId
+          });
+        }
+      } catch (firestoreError) {
+        // Log the error but don't block sign-in
+        console.warn('Could not create/check user document:', firestoreError);
       }
       
       set({ user, isLoading: false });
@@ -141,7 +146,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await addDoc(collection(db, 'testResults'), testResultData);
       toast.success('Test result saved successfully!');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save test result');
+      console.error('Failed to save test result:', error);
+      if (error.code === 'permission-denied') {
+        toast.error('Permission denied. Please check your account permissions.');
+      } else {
+        toast.error(error.message || 'Failed to save test result');
+      }
       throw error;
     }
   },
@@ -175,7 +185,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       
       return results;
     } catch (error: any) {
-      toast.error(error.message || 'Failed to fetch test results');
+      console.error('Failed to fetch test results:', error);
+      if (error.code === 'permission-denied') {
+        toast.error('Permission denied. Please check your account permissions.');
+      } else {
+        toast.error(error.message || 'Failed to fetch test results');
+      }
       throw error;
     }
   },
