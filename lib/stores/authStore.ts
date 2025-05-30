@@ -27,6 +27,8 @@ import toast from 'react-hot-toast';
 interface AuthState {
   user: User | null;
   loading: boolean;
+  isLoading: boolean;
+  error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -34,24 +36,32 @@ interface AuthState {
   saveTestResult: (result: TestResultClass) => Promise<void>;
   getUserTestResults: () => Promise<TestResultClass[]>;
   updateUserProfile: (data: { displayName?: string; email?: string }) => Promise<void>;
+  clearError: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   loading: true,
+  isLoading: false,
+  error: null,
+
+  clearError: () => set({ error: null }),
 
   signIn: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      set({ user: userCredential.user });
+      set({ user: userCredential.user, isLoading: false });
       toast.success('Successfully signed in!');
     } catch (error: any) {
+      set({ error: error.message || 'Failed to sign in', isLoading: false });
       toast.error(error.message || 'Failed to sign in');
       throw error;
     }
   },
 
   signUp: async (email: string, password: string, displayName: string) => {
+    set({ isLoading: true, error: null });
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -61,18 +71,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         displayName,
         email: user.email,
         createdAt: new Date(),
-        projectId: firebaseConfig.projectId
+        projectId: (firebaseConfig as any).projectId
       });
       
-      set({ user });
+      set({ user, isLoading: false });
       toast.success('Account created successfully!');
     } catch (error: any) {
+      set({ error: error.message || 'Failed to create account', isLoading: false });
       toast.error(error.message || 'Failed to create account');
       throw error;
     }
   },
 
   signInWithGoogle: async () => {
+    set({ isLoading: true, error: null });
     try {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
@@ -85,24 +97,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           displayName: user.displayName,
           email: user.email,
           createdAt: new Date(),
-          projectId: firebaseConfig.projectId
+          projectId: (firebaseConfig as any).projectId
         });
       }
       
-      set({ user });
+      set({ user, isLoading: false });
       toast.success('Successfully signed in with Google!');
     } catch (error: any) {
+      set({ error: error.message || 'Failed to sign in with Google', isLoading: false });
       toast.error(error.message || 'Failed to sign in with Google');
       throw error;
     }
   },
 
   signOut: async () => {
+    set({ isLoading: true, error: null });
     try {
       await signOut(auth);
-      set({ user: null });
+      set({ user: null, isLoading: false });
       toast.success('Successfully signed out!');
     } catch (error: any) {
+      set({ error: error.message || 'Failed to sign out', isLoading: false });
       toast.error(error.message || 'Failed to sign out');
       throw error;
     }
@@ -120,7 +135,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         userId: user.uid,
         userEmail: user.email,
         createdAt: new Date(),
-        projectId: firebaseConfig.projectId
+        projectId: (firebaseConfig as any).projectId
       };
 
       await addDoc(collection(db, 'testResults'), testResultData);
@@ -175,7 +190,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await updateDoc(doc(db, 'users', user.uid), {
         ...data,
         updatedAt: new Date(),
-        projectId: firebaseConfig.projectId
+        projectId: (firebaseConfig as any).projectId
       });
       
       toast.success('Profile updated successfully!');
