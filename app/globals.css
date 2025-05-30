@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-serene via-white to-calm text-gray-900;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-accent text-white px-6 py-3 rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 font-medium;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-gray-700 px-6 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 hover:shadow-md transition-all duration-200 font-medium;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-shadow duration-200;
+  }
+  
+  .card-wellness {
+    @apply bg-gradient-to-br from-white to-wellness rounded-xl shadow-md p-4 sm:p-6 border border-gray-100 hover:shadow-lg transition-all duration-200;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply py-16 sm:py-24;
+  }
+  
+  .wellness-bg {
+    @apply bg-gradient-to-br from-serene via-calm to-peaceful;
+  }
+  
+  .hero-section {
+    @apply bg-gradient-to-br from-calm via-white to-serene;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Focus styles for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+  animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Mobile card improvements */
+@media (max-width: 640px) {
+  .card-wellness {
+    @apply p-4;
+  }
+  
+  .card-wellness .icon-container {
+    @apply w-10 h-10 mb-3 mx-auto;
+  }
+  
+  .card-wellness .icon-container svg {
+    @apply w-5 h-5;
+  }
+  
+  .card-wellness h3 {
+    @apply text-lg mb-2;
+  }
+  
+  .card-wellness p {
+    @apply text-sm leading-relaxed;
+  }
+}
+
+/* Ensure proper icon display */
+.card-wellness .gradient-icon {
+  @apply bg-gradient-to-br from-primary to-accent text-white rounded-xl flex items-center justify-center shadow-sm;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .card-wellness .gradient-icon {
+    @apply w-10 h-10;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+}
