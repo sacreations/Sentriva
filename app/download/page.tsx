@@ -86,7 +86,7 @@ export default function DownloadPage() {
                 <DevicePhoneMobileIcon className="h-8 w-8 text-gray-600" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Mobile App</h2>
-              <p className="text-gray-600">Native app for iOS and Android</p>
+              <p className="text-gray-600">Native app for Android</p>
             </div>
 
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
