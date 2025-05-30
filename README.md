@@ -41,6 +41,34 @@ npm run dev
 - **User Context**: Displays user welcome message and sign-out option
 - **Smooth Transitions**: Animated navigation states and hover effects
 
+## Firebase Configuration for Vercel Deployment
+
+### Required Environment Variables
+Add these to your Vercel project settings:
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+
+### Firebase Console Configuration
+1. **Authorized Domains**: Add your Vercel domain to Firebase Console
+   - Go to Firebase Console → Authentication → Settings → Authorized domains
+   - Add your Vercel domain (e.g., `your-app.vercel.app`)
+   - Also add `localhost` for local development
+
+2. **OAuth Configuration**: 
+   - Go to Google Cloud Console → APIs & Credentials
+   - Add your Vercel domain to authorized JavaScript origins
+   - Add your Vercel domain + `/api/auth/callback/google` to authorized redirect URIs
+
+3. **Common Issues**:
+   - Ensure all environment variables are properly set in Vercel
+   - Verify domain is added to Firebase authorized domains
+   - Check that Google OAuth is properly configured
+   - Ensure Firebase project has Google Sign-in enabled
+
 ## Project Structure
 
 ```
